@@ -7,14 +7,14 @@ import { Certificate, PaginationQuery } from "../../types/certificate";
 interface CertificateState {
   certificates: Certificate[];
   status: "idle" | "loading" | "failed";
-  favorites: number[];
+  favoriteCertificates: Certificate[];
   certificatesTotal: number;
 }
 
 const initialState: CertificateState = {
   certificates: [],
   status: "idle",
-  favorites: [],
+  favoriteCertificates: [],
   certificatesTotal: 0,
 };
 
@@ -33,21 +33,28 @@ export const certificateSlice = createSlice({
   reducers: {
     handleFavorite: (state, action: PayloadAction<number>) => {
       const id = action.payload;
-      const favoriteIndex = state.favorites.indexOf(id);
+      const favoriteIndex = state.favoriteCertificates.findIndex(
+        (certificate) => certificate.id === id
+      );
 
-      if (favoriteIndex === -1) {
-        state.favorites.push(id);
-      } else {
-        state.favorites.splice(favoriteIndex, 1);
+      if (favoriteIndex !== -1) {
+        state.favoriteCertificates.splice(favoriteIndex, 1);
       }
 
       state.certificates = state.certificates.map(
         (certificate: Certificate) => {
-          if (certificate.id === id)
-            return {
+          if (certificate.id === id) {
+            const newCertificate = {
               ...certificate,
-              isFavorite: favoriteIndex === -1 ? true : false,
+              isFavorite: favoriteIndex === -1,
             };
+            if (favoriteIndex === -1) {
+              state.favoriteCertificates.push(newCertificate);
+            }
+
+            return newCertificate;
+          }
+
           return certificate;
         }
       );
@@ -61,11 +68,15 @@ export const certificateSlice = createSlice({
       .addCase(getCertificates.fulfilled, (state, action) => {
         state.status = "idle";
         state.certificatesTotal = action.payload.result.meta.totalItems;
+
         const data = action.payload.result.data;
 
         state.certificates = data.map((item: Certificate) => ({
           ...item,
-          isFavorite: state.favorites.indexOf(item.id) !== -1,
+          isFavorite:
+            state.favoriteCertificates.findIndex(
+              (certificate) => certificate.id === item.id
+            ) !== -1,
         }));
       })
       .addCase(getCertificates.rejected, (state) => {
