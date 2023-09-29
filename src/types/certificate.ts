@@ -64,3 +64,8 @@ export interface CarbonCertificateOwnerAccount {
     };
   };
 }
+
+export interface PaginationQuery {
+  page: number;
+  limit: number;
+}

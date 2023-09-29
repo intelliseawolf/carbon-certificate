@@ -2,24 +2,26 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AxiosResponse } from "axios";
 
 import { fetchCertificates } from "../../services/certificateService";
-import { Certificate } from "../../types/certificate";
+import { Certificate, PaginationQuery } from "../../types/certificate";
 
 interface CertificateState {
   certificates: Certificate[];
   status: "idle" | "loading" | "failed";
   favorites: number[];
+  certificatesTotal: number;
 }
 
 const initialState: CertificateState = {
   certificates: [],
   status: "idle",
   favorites: [],
+  certificatesTotal: 0,
 };
 
 export const getCertificates = createAsyncThunk(
   "certificate/getCertificates",
-  async () => {
-    const response: AxiosResponse = await fetchCertificates();
+  async ({ page, limit }: PaginationQuery) => {
+    const response: AxiosResponse = await fetchCertificates({ page, limit });
 
     return response.data;
   }
@@ -58,6 +60,7 @@ export const certificateSlice = createSlice({
       })
       .addCase(getCertificates.fulfilled, (state, action) => {
         state.status = "idle";
+        state.certificatesTotal = action.payload.result.meta.totalItems;
         const data = action.payload.result.data;
 
         state.certificates = data.map((item: Certificate) => ({
