@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { Bookmark } from "react-bootstrap-icons";
+import { toast } from "react-toastify";
 
 import { CertificateTable } from "./CertificateTable";
 import TooltipWrapper from "../../components/tooltipWrapper";
@@ -17,6 +18,7 @@ function Certificate() {
 
   const onCopyUniqueId = async (id: string) => {
     await navigator.clipboard.writeText(id);
+    toast.success("You just copied unique id");
   };
 
   const TipElement = useMemo(() => {
