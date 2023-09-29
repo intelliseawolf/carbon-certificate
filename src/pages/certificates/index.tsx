@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { Bookmark } from "react-bootstrap-icons";
+import { Bookmark, BookmarkFill } from "react-bootstrap-icons";
 import { toast } from "react-toastify";
 
 import { CertificateTable } from "./CertificateTable";
@@ -7,6 +7,7 @@ import TooltipWrapper from "../../components/tooltipWrapper";
 import Spinner from "../../components/spinner";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { getCertificates } from "../../redux/modules/certificateSlice";
+import { certificateActions } from "../../redux/modules/certificateSlice";
 
 function Certificate() {
   const dispatch = useAppDispatch();
@@ -24,6 +25,10 @@ function Certificate() {
   const TipElement = useMemo(() => {
     return <span>Click to copy the certificate ID</span>;
   }, []);
+
+  const onHandleFavorite = (id: number) => {
+    dispatch(certificateActions.handleFavorite(id));
+  };
 
   return (
     <CertificateTable responsive="lg">
@@ -78,7 +83,12 @@ function Certificate() {
               </td>
               <td className="w-5">{certificate.ownershipStatus}</td>
               <td className="w-5">
-                <Bookmark />
+                <div
+                  onClick={() => onHandleFavorite(certificate.id)}
+                  className="cursor-pointer"
+                >
+                  {certificate.isFavorite ? <BookmarkFill /> : <Bookmark />}
+                </div>
               </td>
             </tr>
           ))

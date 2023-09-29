@@ -22,12 +22,6 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action<string>
 >;
 
-// @ts-ignore
-if (window.Cypress) {
-  // @ts-ignore
-  window.store = store;
-}
-
 export function setupStore(preloadedState?: PreloadedState<RootState>) {
   return configureStore({
     reducer: {

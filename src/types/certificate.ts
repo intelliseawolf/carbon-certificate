@@ -18,6 +18,7 @@ export interface Certificate {
   carbonField: CarbonField;
   carbonUser: CarbonUser;
   carbonCertificateOwnerAccount: CarbonCertificateOwnerAccount;
+  isFavorite?: boolean;
 }
 
 export interface CarbonField {
