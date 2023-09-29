@@ -22,14 +22,14 @@ function Certificate() {
     dispatch(getCertificates({ page, limit }));
   }, [dispatch, page, limit]);
 
+  const TipElement = useMemo(() => {
+    return <span>Click to copy the certificate ID</span>;
+  }, []);
+
   const onCopyUniqueId = async (id: string) => {
     await navigator.clipboard.writeText(id);
     toast.success("You just copied unique id");
   };
-
-  const TipElement = useMemo(() => {
-    return <span>Click to copy the certificate ID</span>;
-  }, []);
 
   const onHandleFavorite = (id: number) => {
     dispatch(certificateActions.handleFavorite(id));

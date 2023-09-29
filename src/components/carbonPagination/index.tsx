@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import Pagination from "react-bootstrap/Pagination";
 
 interface CarbonPaginationProps {
@@ -13,9 +14,9 @@ const CarbonPagination = ({
   limit,
   setPage,
 }: CarbonPaginationProps) => {
-  const paginationArray = Array.from(
-    { length: Math.ceil(total / limit) },
-    (_, i) => i + 1
+  const paginationArray = useMemo(
+    () => Array.from({ length: Math.ceil(total / limit) }, (_, i) => i + 1),
+    [total, limit]
   );
 
   return (
